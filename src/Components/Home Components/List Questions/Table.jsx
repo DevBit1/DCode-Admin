@@ -1,10 +1,21 @@
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { HOME_CreateQuestion, QUESTION_DASHBOARD } from "../../../Constants/RoutePaths"
 import { useQuestionContext } from '../../../Context/QuestionContextProvider'
 import { getConvertedTime } from '../../../Utils/DateConverter'
 import Loading from '../../Common/Loading'
+import { FaChevronUp } from "react-icons/fa";
+import { FaChevronDown } from "react-icons/fa";
+import { SORT_ORDER } from '../../../Constants/Values'
+
+const eligibleSortTypes = [
+    'serial',
+    'title',
+    'totalTestCases',
+    'totalAttempts',
+    'successfullAttempts',
+]
 
 function TableComponent({ tableCol = [], data = [], loading }) {
 
@@ -12,6 +23,39 @@ function TableComponent({ tableCol = [], data = [], loading }) {
         handleSetEditQuestionObject
     } = useQuestionContext()
 
+    // This will allow us to sort the array based on the selected type
+    const [selectedSortType, setSelectedSortType] = useState({
+        key: "serial",
+        order: SORT_ORDER.ASC
+    })
+
+
+    const handleSortData = (key, val) => {
+        setSelectedSortType({
+            key: key,
+            order: val
+        })
+    }
+
+    const handleSort = (data = []) => {
+        let temp = structuredClone(data)
+        if (selectedSortType.key == "title") {
+            if (selectedSortType.order == SORT_ORDER.ASC) {
+                return temp.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))
+            }
+            else {
+                return temp.sort((a, b) => b.title.toLowerCase().localeCompare(a.title.toLowerCase()))
+            }
+        }
+        else {
+            if (selectedSortType.order == SORT_ORDER.ASC) {
+                return temp.sort((a, b) => a[selectedSortType.key] - b[selectedSortType.key])
+            }
+            else {
+                return temp.sort((a, b) => b[selectedSortType.key] - a[selectedSortType.key])
+            }
+        }
+    }
 
 
 
@@ -21,7 +65,6 @@ function TableComponent({ tableCol = [], data = [], loading }) {
         handleSetEditQuestionObject(question)
         navigate(`../${HOME_CreateQuestion}`)
     }
-
 
 
 
@@ -45,9 +88,28 @@ function TableComponent({ tableCol = [], data = [], loading }) {
                                             }
                                         }
                                     >
-                                        <Box className="flex gap-x-2">
+                                        <Box className="flex gap-x-2 items-center">
                                             {
                                                 ele.name
+                                            }
+                                            {
+                                                eligibleSortTypes.includes(ele.accessor) &&
+                                                (
+                                                    <Box>
+                                                        <FaChevronUp
+                                                            className='cursor-pointer'
+                                                            onClick={() => {
+                                                                handleSortData(ele.accessor, SORT_ORDER.ASC)
+                                                            }}
+                                                        />
+                                                        <FaChevronDown
+                                                            className='cursor-pointer'
+                                                            onClick={() => {
+                                                                handleSortData(ele.accessor, SORT_ORDER.DESC)
+                                                            }}
+                                                        />
+                                                    </Box>
+                                                )
                                             }
                                         </Box>
                                     </TableCell>
@@ -81,7 +143,7 @@ function TableComponent({ tableCol = [], data = [], loading }) {
                             ) :
                             (
                                 data.length > 0 ? (
-                                    data.map((ele, key) => (
+                                    handleSort(data).map((ele, key) => (
                                         <TableRow key={key}>
                                             {
                                                 tableCol.map((item, ind) => {

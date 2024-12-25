@@ -5,3 +5,8 @@ export const DIFFICULTY = {
     MEDIUM: "medium",
     HARD: "hard"
 }
+
+export const SORT_ORDER = {
+    ASC: "asc",
+    DESC: "desc"
+}
