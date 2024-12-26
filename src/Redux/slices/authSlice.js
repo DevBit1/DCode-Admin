@@ -21,27 +21,6 @@ export const loginUser = createAsyncThunk("login", async (values, thunkAPI) => {
     }
 })
 
-// const connectToSocketServer = (token) => {
-//     if (token) {
-//         try {
-//             let temp = io(`${import.meta.env.VITE_SERVER_URL}`, {
-//                 withCredentials: true,
-//                 auth: {
-//                     token: token
-//                 }
-//             })
-
-//             return temp
-//         } catch (error) {
-//             // Add a toast here
-//             console.error("Error connecting to socket server", error.message)
-//             return null
-//         }
-//     }
-
-//     return null
-// }
-
 
 
 
