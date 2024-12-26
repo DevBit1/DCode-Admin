@@ -24,10 +24,7 @@ function TableComponent({ tableCol = [], data = [], loading }) {
     } = useQuestionContext()
 
     // This will allow us to sort the array based on the selected type
-    const [selectedSortType, setSelectedSortType] = useState({
-        key: "serial",
-        order: SORT_ORDER.ASC
-    })
+    const [selectedSortType, setSelectedSortType] = useState(null)
 
 
     const handleSortData = (key, val) => {
@@ -38,23 +35,26 @@ function TableComponent({ tableCol = [], data = [], loading }) {
     }
 
     const handleSort = (data = []) => {
-        let temp = structuredClone(data)
-        if (selectedSortType.key == "title") {
-            if (selectedSortType.order == SORT_ORDER.ASC) {
-                return temp.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))
+        if (selectedSortType) {
+            let temp = structuredClone(data)
+            if (selectedSortType.key == "title") {
+                if (selectedSortType.order == SORT_ORDER.ASC) {
+                    return temp.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()))
+                }
+                else {
+                    return temp.sort((a, b) => b.title.toLowerCase().localeCompare(a.title.toLowerCase()))
+                }
             }
             else {
-                return temp.sort((a, b) => b.title.toLowerCase().localeCompare(a.title.toLowerCase()))
+                if (selectedSortType.order == SORT_ORDER.ASC) {
+                    return temp.sort((a, b) => a[selectedSortType.key] - b[selectedSortType.key])
+                }
+                else {
+                    return temp.sort((a, b) => b[selectedSortType.key] - a[selectedSortType.key])
+                }
             }
         }
-        else {
-            if (selectedSortType.order == SORT_ORDER.ASC) {
-                return temp.sort((a, b) => a[selectedSortType.key] - b[selectedSortType.key])
-            }
-            else {
-                return temp.sort((a, b) => b[selectedSortType.key] - a[selectedSortType.key])
-            }
-        }
+        return data
     }
 
 
@@ -66,7 +66,9 @@ function TableComponent({ tableCol = [], data = [], loading }) {
         navigate(`../${HOME_CreateQuestion}`)
     }
 
-
+    useEffect(() => {
+        setSelectedSortType(null)
+    }, [data])
 
 
     return (

@@ -10,8 +10,17 @@ import apiConnect from '../../Utils/ApiConnector'
 import { asyncWrapper } from '../../Utils/asyncWrapper'
 import { getConvertedTime } from '../../Utils/DateConverter'
 import Loading from '../../Components/Common/Loading'
+import { SORT_ORDER } from '../../Constants/Values'
+import { FaChevronUp } from "react-icons/fa";
+import { FaChevronDown } from "react-icons/fa";
 
-
+// We are using property names "accessors"
+const eligibleSortTypes = [
+  'name',
+  'attemptedQuestions',
+  'solvedQuestions',
+  'notAttemptedQuestions',
+]
 
 const User = () => {
 
@@ -29,6 +38,9 @@ const User = () => {
 
   const [openModal, setOpenModal] = useState(false)
 
+  // This will allow us to sort the array based on the selected type
+  const [selectedSortType, setSelectedSortType] = useState(null)
+
   const handleCloseModal = () => {
     setOpenModal(false)
   }
@@ -45,6 +57,7 @@ const User = () => {
 
       setUsers(response.data.users)
       setTotalPages(response.data.totalPages)
+      setSelectedSortType(null)
     } catch (error) {
       throw new Error(`Error while fetching all Users : ${error.response?.data.message || error.message}`)
     }
@@ -76,6 +89,37 @@ const User = () => {
 
   const handlePageChange = (val) => {
     setPage(val)
+  }
+
+  const handleSortData = (key, val) => {
+    setSelectedSortType({
+      key: key,
+      order: val
+    })
+  }
+
+  const handleSort = (data = []) => {
+    if (selectedSortType) {
+      let temp = structuredClone(data)
+      if (selectedSortType.key == "name") {
+        if (selectedSortType.order == SORT_ORDER.ASC) {
+          return temp.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+        }
+        else {
+          return temp.sort((a, b) => b.name.toLowerCase().localeCompare(a.name.toLowerCase()))
+        }
+      }
+      else {
+        if (selectedSortType.order == SORT_ORDER.ASC) {
+          return temp.sort((a, b) => a[selectedSortType.key] - b[selectedSortType.key])
+        }
+        else {
+          return temp.sort((a, b) => b[selectedSortType.key] - a[selectedSortType.key])
+        }
+      }
+    }
+
+    return data
   }
 
   useEffect(() => {
@@ -141,7 +185,27 @@ const User = () => {
                       }
                     }
                   >
-                    {ele.name}
+                    <Box className="flex gap-x-2 items-center">
+                      {ele.name}
+                      {
+                        eligibleSortTypes.includes(ele.accessor) && (
+                          <Box>
+                            <FaChevronUp
+                              className='cursor-pointer'
+                              onClick={() => {
+                                handleSortData(ele.accessor, SORT_ORDER.ASC)
+                              }}
+                            />
+                            <FaChevronDown
+                              className='cursor-pointer'
+                              onClick={() => {
+                                handleSortData(ele.accessor, SORT_ORDER.DESC)
+                              }}
+                            />
+                          </Box>
+                        )
+                      }
+                    </Box>
                   </TableCell>
                 ))
               }
@@ -172,7 +236,7 @@ const User = () => {
                 (
                   users.length > 0 ?
                     (
-                      users.map((ele) => (
+                      handleSort(users).map((ele) => (
                         <TableRow key={ele._id}>
                           {
                             TableSchema.map((item, ind) => (
