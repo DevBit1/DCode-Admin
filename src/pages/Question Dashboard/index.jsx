@@ -101,10 +101,10 @@ const QuestionDashBoard = () => {
           {
             showSideBar ?
               (
-                <GoSidebarCollapse size={"30px"} onClick={() => setShowSideBar(prev => !prev)}/>
+                <GoSidebarCollapse size={"30px"} onClick={() => setShowSideBar(prev => !prev)} />
               ) :
               (
-                <GoSidebarExpand size={"30px"} onClick={() => setShowSideBar(prev => !prev)}/>
+                <GoSidebarExpand size={"30px"} onClick={() => setShowSideBar(prev => !prev)} />
               )
           }
         </div>
@@ -119,11 +119,11 @@ const QuestionDashBoard = () => {
             xs: 12,
             md: 6,
           }}
-          className="overflow-y-auto"
+          className="h-full overflow-y-auto"
         >
           <MarkdownPreview
             source={question}
-            style={{ padding: 16, height: "100%" }}
+            style={{ padding: 16, height: "100%", overflowY: "auto" }}
           >
           </MarkdownPreview>
         </Grid>
