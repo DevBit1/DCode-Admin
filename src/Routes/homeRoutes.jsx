@@ -34,7 +34,7 @@ export const homeRoutes = {
     path: HOME,
     element: (
         <Authenticated
-            redirect={LOGIN}
+            // redirect={LOGIN}
         >
             <Home />
         </Authenticated>

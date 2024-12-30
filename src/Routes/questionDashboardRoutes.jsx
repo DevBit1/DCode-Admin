@@ -14,7 +14,7 @@ export const questionDashboardRoutes = {
     path: `${QUESTION_DASHBOARD}/:qId`,
     element: (
         <Authenticated
-            redirect={LOGIN}
+            // redirect={LOGIN}
         >
             <Suspense fallback={<Loading />}>
                 <QuestionDashBoard />

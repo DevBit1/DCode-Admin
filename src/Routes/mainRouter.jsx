@@ -4,25 +4,33 @@ import { authRoutes } from "./authRoutes";
 import { homeRoutes } from "./homeRoutes";
 import { questionDashboardRoutes } from "./questionDashboardRoutes";
 import { codeCollab } from "./codeCollabRoutes";
- 
+import App from "../App";
+
 
 const routes = [
     {
-        index:true,
-        element:<Navigate to={LOGIN}></Navigate>
-    },
-    {
-        ...authRoutes
-    },
-    {
-        ...homeRoutes
-    },
-    {
-        ...questionDashboardRoutes
-    },
-    {
-        ...codeCollab
+        path: "/",
+        element: <App />,
+        children: [
+            {
+                index: true,
+                element: <Navigate to={LOGIN}></Navigate>
+            },
+            {
+                ...authRoutes
+            },
+            {
+                ...homeRoutes
+            },
+            {
+                ...questionDashboardRoutes
+            },
+            {
+                ...codeCollab
+            }
+        ]
     }
+
 ]
 
 

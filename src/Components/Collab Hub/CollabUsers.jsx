@@ -18,7 +18,9 @@ const CollabUsers = ({ room }) => {
             console.log(response.data)
             const temp = response.data.users.map((ele) => {
 
+                // This is for disabling
                 ele.disabled = disabledUsers.find((item) => item._id == ele._id) || false
+                // This is for the checkbox
                 ele.checked = disabledUsers.find((item) => item._id == ele._id) ? true : (selectedUsers.find((item) => item._id == ele._id) ? true : false)
 
                 return ele

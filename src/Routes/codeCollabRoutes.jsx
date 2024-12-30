@@ -10,7 +10,7 @@ export const codeCollab = {
     path: `${CODE_COLLAB}/:roomName`,
     element: (
         <Authenticated
-            redirect={LOGIN}
+            // redirect={LOGIN}
         >
             <Suspense fallback={<Loading />}>
                 <CodeCollab />

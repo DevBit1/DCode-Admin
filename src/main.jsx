@@ -2,11 +2,12 @@ import { CssBaseline, ThemeProvider, createTheme } from "@mui/material"
 import axios from 'axios'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
-import App from './App.jsx'
+import { RouterProvider } from "react-router-dom"
 import QuestionContextProvider from './Context/QuestionContextProvider.jsx'
 import SocketContextProvider from './Context/SocketContextProvider.jsx'
 import './index.css'
 import store from "./Redux/mainReducer.js"
+import router from "./Routes/mainRouter.jsx"
 
 // To allow receiving and sending "cookies"
 axios.defaults.withCredentials = true
@@ -45,8 +46,8 @@ createRoot(document.getElementById('root')).render(
     <SocketContextProvider>
       <QuestionContextProvider>
         <ThemeProvider theme={theme}>
+          <RouterProvider router={router}/>
           <CssBaseline />
-          <App />
         </ThemeProvider>
       </QuestionContextProvider>
     </SocketContextProvider>
