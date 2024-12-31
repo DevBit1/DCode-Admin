@@ -109,6 +109,8 @@ const SocketContextProvider = ({ children }) => {
 
   useEffect(() => {
     if (socket) {
+      socket.emit("get-online-users")
+      
       socket.on("online-users", (data) => {
         setOnlineUsers([...data])
       })

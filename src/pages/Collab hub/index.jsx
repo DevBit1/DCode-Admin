@@ -16,6 +16,8 @@ const CodeCollab = () => {
   const yDoc = useRef(new Y.Doc()) // So that on re-renders we don't get a new Y.Doc()
   const { socket, handleDeleteRoom } = useSocketContext()
 
+  const [onlineParticipants, setOnlineParticipants] = useState([])
+
 
   const [openModal, setOpenModal] = useState(false)
 
@@ -63,6 +65,14 @@ const CodeCollab = () => {
       }
     })
 
+    socket.emit("get-participants", roomName)
+
+    socket.on(`participants:${roomName}`, (data) => {
+      console.log("Got emitted")
+      setOnlineParticipants(data)
+    })
+
+    // Responsible for redirecting to the home page
     socket.on(`leave-room-${roomName}`, () => {
       navigate(`${HOME}/${HOME_CODE_HUB}`)
     })
@@ -72,6 +82,8 @@ const CodeCollab = () => {
       // So that once the user leaves the room there is no more data coming
       socket.removeAllListeners(`initialSync:${roomName}`)
       socket.removeAllListeners(`update:${roomName}`)
+      socket.removeAllListeners(`participants:${roomName}`)
+      socket.removeAllListeners(`leave-room-${roomName}`)
     }
 
 
@@ -92,6 +104,10 @@ const CodeCollab = () => {
       return () => binding.destroy();
     }
   }, [isEditorReady]);
+
+  useEffect(() => {
+    console.log("These guys are online", onlineParticipants)
+  }, [onlineParticipants])
 
 
 
@@ -134,7 +150,10 @@ const CodeCollab = () => {
         <Grid2
           size={6}
         >
-          <CollabUsers room={roomName} />
+          <CollabUsers
+            room={roomName}
+            online={onlineParticipants}
+          />
         </Grid2>
         <Grid2
           size={6}

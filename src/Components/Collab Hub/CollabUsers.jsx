@@ -3,8 +3,9 @@ import React, { useCallback, useEffect, useState } from 'react'
 import debounce from '../../Constants/debounce'
 import apiConnect from '../../Utils/ApiConnector'
 import { asyncWrapper } from '../../Utils/asyncWrapper'
+import { RiRadioButtonLine } from "react-icons/ri";
 
-const CollabUsers = ({ room }) => {
+const CollabUsers = ({ room, online }) => {
 
     const [search, setSearch] = useState("")
     const [users, setUsers] = useState([])
@@ -142,12 +143,16 @@ const CollabUsers = ({ room }) => {
                                     (
                                         disabledUsers.map((ele) => (
                                             <ListItemButton
-                                                disabled={true}
+                                                disabled={!online?.includes(ele._id)}
+                                                sx={{
+                                                    display: "flex",
+                                                    justifyContent: "space-between"
+                                                }}
                                             >
-                                                <Checkbox
-                                                    checked={true}
-                                                />
-                                                <ListItemText primary={ele.name} />
+                                                <Typography>
+                                                    {ele.name}
+                                                </Typography>
+                                                <RiRadioButtonLine />
                                             </ListItemButton>
                                         ))
                                     )
